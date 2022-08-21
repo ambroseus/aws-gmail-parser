@@ -7,7 +7,6 @@ export default {
       http: {
         method: 'post',
         path: 'send-email',
-        cors: true,
       },
     },
   ],

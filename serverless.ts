@@ -1,52 +1,50 @@
 import type { AWS } from '@serverless/typescript'
 
-import emailSender from '@functions/emailSender'
+import testEmailSender from '@functions/testEmailSender'
 
 const serverlessConfiguration: AWS = {
-  useDotenv: true,
   service: 'aws-gmail-parser-service',
-  frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
-    region: 'eu-central-1',
-    stage: 'dev',
-    profile: 'serverless',
+    profile: 'aws-practitioner',
+    region: 'us-east-1',
+    stage: '${opt:stage, "dev"}',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      TEST_GMAIL_FROM: '${env:TEST_GMAIL_FROM}',
+      TEST_GMAIL_TO: '${env:TEST_GMAIL_TO}',
     },
     lambdaHashingVersion: '20201221',
     iamRoleStatements: [
       {
         Effect: 'Allow',
-        Action: 's3:ListBucket',
-        Resource: ['arn:aws:s3:::${env:BUCKET_NAME}'],
+        Action: ['ses:*'],
+        Resource: '*',
       },
       {
         Effect: 'Allow',
-        Action: 's3:*',
-        Resource: ['arn:aws:s3:::${env:BUCKET_NAME}/*'],
-      },
-      {
-        Effect: 'Allow',
-        Action: 'sqs:*',
-        Resource: [{ 'Fn::GetAtt': ['CatalogItemsQueue', 'Arn'] }],
+        Action: ['logs:*'],
+        Resource: { 'Fn::Sub': 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*' },
       },
     ],
   },
-
-  functions: { emailSender },
+  functions: {
+    testEmailSender,
+  },
+  useDotenv: true,
+  frameworkVersion: '3',
+  plugins: ['serverless-esbuild', 'serverless-offline'],
   package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,
       minify: false,
-      sourcemap: true,
+      sourcemap: false,
       exclude: ['aws-sdk'],
       target: 'node14',
       define: { 'require.resolve': undefined },
