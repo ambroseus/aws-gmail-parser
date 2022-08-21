@@ -4,8 +4,8 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
-    "start": "sls` offline start",
-    "build": "sls package"
+    "start": "sls offline",
+    "build": "sls package && sls deploy --force"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -14,7 +14,8 @@
     "@middy/core": "^3.2.0",
     "@middy/http-json-body-parser": "^3.2.0",
     "aws-sdk": "^2.1199.0",
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "googleapis": "^107.0.0"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.21.0",

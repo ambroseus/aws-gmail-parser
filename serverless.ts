@@ -2,6 +2,7 @@ import type { AWS } from '@serverless/typescript'
 
 import testEmailSender from '@functions/testEmailSender'
 import triggerSendEmailApi from '@functions/triggerSendEmailApi'
+import gmailParser from '@functions/gmailParser'
 
 const serverlessConfiguration: AWS = {
   service: 'aws-gmail-parser-service',
@@ -20,12 +21,12 @@ const serverlessConfiguration: AWS = {
       TEST_GMAIL_FROM: '${env:TEST_GMAIL_FROM}',
       TEST_GMAIL_TO: '${env:TEST_GMAIL_TO}',
       API_SEND_EMAIL: '${env:API_SEND_EMAIL}',
+      GMAIL_ACCOUNT: '${env:GMAIL_ACCOUNT}',
       GMAIL_API_CLIENT_ID: '${env:GMAIL_API_CLIENT_ID}',
       GMAIL_API_CLIENT_SECRET: '${env:GMAIL_API_CLIENT_SECRET}',
-      GMAIL_API_REDIRECT_URI: '${env:GMAIL_API_REDIRECT_URI}',
+      GMAIL_API_REDIRECT_URL: '${env:GMAIL_API_REDIRECT_URL}',
       GMAIL_API_REFRESH_TOKEN: '${env:GMAIL_API_REFRESH_TOKEN}',
     },
-    lambdaHashingVersion: '20201221',
     iamRoleStatements: [
       {
         Effect: 'Allow',
@@ -42,6 +43,7 @@ const serverlessConfiguration: AWS = {
   functions: {
     testEmailSender,
     triggerSendEmailApi,
+    gmailParser,
   },
   useDotenv: true,
   frameworkVersion: '3',

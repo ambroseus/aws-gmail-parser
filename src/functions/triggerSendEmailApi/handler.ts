@@ -10,24 +10,23 @@ const triggerSendEmailApi = async (event) => {
       return formatJSONResponse(400, 'No product id in request')
     }
 
-    await axios.post(
-      process.env.API_SEND_EMAIL,
-      {
+    await axios({
+      method: 'post',
+      url: process.env.API_SEND_EMAIL,
+      headers: {
+        'content-type': 'application/json',
+      },
+      data: {
         subject: `Added product #${productId}`,
         message: `<table border='1'><tr><td>Product ID</td><td>${productId}</td></tr></table>`,
       },
-      {
-        headers: {
-          'content-type': 'application/json',
-        },
-      }
-    )
+    })
 
     return formatJSONResponse(200, `Notification about adding product #${productId} has sent`)
     //
   } catch (error) {
     console.error(error)
-    return formatJSONResponse(500, error)
+    return formatJSONResponse(500, error.toString())
   }
 }
 
