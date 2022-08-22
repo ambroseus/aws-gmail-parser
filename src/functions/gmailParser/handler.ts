@@ -1,11 +1,15 @@
 import { formatJSONResponse } from '@libs/api-gateway'
 import { middyfy } from '@libs/lambda'
 import { getEmailsBody } from '@libs/gmail'
+import { parseHtml } from '@libs/parse-html'
 
 const gmailParser = async () => {
   try {
     const html = await getEmailsBody()
-    return formatJSONResponse(200, html)
+
+    const data = html.map(parseHtml)
+
+    return formatJSONResponse(200, data)
     //
   } catch (error) {
     console.error(error)
