@@ -27,18 +27,22 @@ const serverlessConfiguration: AWS = {
       GMAIL_API_REDIRECT_URL: '${env:GMAIL_API_REDIRECT_URL}',
       GMAIL_API_REFRESH_TOKEN: '${env:GMAIL_API_REFRESH_TOKEN}',
     },
-    iamRoleStatements: [
-      {
-        Effect: 'Allow',
-        Action: ['ses:*'],
-        Resource: '*',
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: ['ses:*'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['logs:*'],
+            Resource: { 'Fn::Sub': 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*' },
+          },
+        ],
       },
-      {
-        Effect: 'Allow',
-        Action: ['logs:*'],
-        Resource: { 'Fn::Sub': 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*' },
-      },
-    ],
+    },
   },
   functions: {
     testEmailSender,
