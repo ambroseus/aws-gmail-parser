@@ -36,10 +36,10 @@ export const getEmailById = async (id) => {
 const getHtmlBody = (message) => Buffer.from(message.payload.body.data, 'base64').toString('utf-8')
 
 export const getEmailsBody = async ({ from = process.env.TEST_GMAIL_FROM, maxResults = 10 } = {}) => {
-  const emails = await callApi(`/messages?maxResults=${maxResults}&q=from:${encodeURIComponent(from)}`)
-  if (!emails?.messages) return []
+  const messageList = await callApi(`/messages?maxResults=${maxResults}&q=from:${encodeURIComponent(from)}`)
+  if (!messageList?.messages) return []
 
-  const data = await Promise.all(emails?.messages?.map((email) => getEmailById(email.id)))
+  const messages = await Promise.all(messageList.messages.map((message) => getEmailById(message.id)))
 
-  return data.map(getHtmlBody)
+  return messages.map(getHtmlBody)
 }
