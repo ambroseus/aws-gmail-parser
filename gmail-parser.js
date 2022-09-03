@@ -55,8 +55,15 @@ const TEST_GMAIL_FROM = 'ambroseus+aws-ses-sender@gmail.com'
 
 async function parseEmails(auth) {
   const gmail = google.gmail({ version: 'v1', auth })
-  const { data } = await gmail.users.messages.list({ userId: 'me', q: `from:${TEST_GMAIL_FROM}`, maxResults: 10 })
-  console.log(`parseEmails > res`, data)
+  const res = await gmail.users.messages.list({ userId: 'me', q: `from:${TEST_GMAIL_FROM}`, maxResults: 10 })
+  const { messages } = res.data
+
+  const emails = await Promise.all(
+    messages.map((message) => gmail.users.messages.get({ userId: 'me', id: message.id }))
+  )
+
+  const emailBodies = emails.map((email) => Buffer.from(email.data.payload.body.data, 'base64').toString('utf-8'))
+  console.log(`parseEmails > emailBodies`, emailBodies)
 }
 
 authorize().then(parseEmails).catch(console.error)
