@@ -116,3 +116,5 @@ jspm_packages
 .esbuild
 .env
 
+credentials.json
+token.json
